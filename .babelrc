@@ -5,5 +5,12 @@
         "node": "8.14"
       }
     }]
-  ]
+  ],
+  "plugins": [
+    ["babel-plugin-stack-trace-sourcemap", {
+        "importOverride": ["source-map-support", "install", "_sourceMapSupport"],
+        "execute": true
+    }]
+  ],
+  "sourceMaps": "inline"
 }

@@ -1,0 +1,19 @@
+{
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "sourceType": "module",
+    },
+    "env": {
+      "node": true
+    },
+    "rules": {
+        "consistent-return": 2,
+        "indent"           : [1, 2],
+        "no-else-return"   : 1,
+        "semi"             : [1, "always"],
+        "space-unary-ops"  : 2,
+        "no-unused-vars": 1,
+        "no-console": 0
+    }
+}
