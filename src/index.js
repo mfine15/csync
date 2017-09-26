@@ -39,12 +39,6 @@ async function update(courseId, dest){
   }
   const files = await r(`courses/${courseId}/files`);
   for (let file of files){
-    winston.info('Inserting file', {
-      id: file.id,
-      updated_at: file.updated_at,
-      name: file.filename,
-      folder_id: file.folder_id
-    });
     const path = join(dest, folderPaths[file.folder_id], file.filename);
     const exists = await pathExists(path.toString());
     const remoteModified = Date.parse(file.updated_at);
@@ -54,12 +48,19 @@ async function update(courseId, dest){
     }
     else {
       const stats = await stat(path);
-      if(remoteModified > stats.ctime){
+      if(remoteModified > stats.mtime.getTime()){
         winston.info("File %s out of date, updating", file.filename, {
           remoteModified,
-          localModified: stats.ctime
+          localModified: stats.mtime.getTime()
         });
         downloadFile(file,path);
+      }
+      else{
+        winston.info("File %s up to date, ignoring", file.filename, {
+          exists,
+          remoteModified,
+          localModified: stats.mtime.getTime()
+        })
       }
     }
   }
