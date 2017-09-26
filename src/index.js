@@ -1,4 +1,3 @@
-// import _ from 'lodash';
 import Promise from 'bluebird';
 import {
   ensureDir,
@@ -85,13 +84,13 @@ async function run(){
     config = JSON.parse(await readFile(tilde('~/.csyncrc')));
   }
   catch (e) {
-    winston.error('Error reading config file at %s', tilde('~/.csyncrc'), e);
+    winston.error('Fatal: Error reading config file at %s', tilde('~/.csyncrc'), e);
     throw(e);
   }
   const r = request.defaults({
-    baseUrl: config.canvasUrl,
+    baseUrl: config.canvasUrl + '/api/v1/',
     headers: {
-      'Authorization': `Bearer ${config.authToken}`
+      'Authorization': `Bearer ${config.accessToken   }`
     },
     json: true
   });

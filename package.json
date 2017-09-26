@@ -1,23 +1,19 @@
 {
-  "name": "canvas-sync",
+  "name": "csync-canvas",
   "version": "1.0.0",
-  "description": "Command line program to sync files from canvas",
-  "main": "index.js",
+  "description": "Command line utility to sync files from canvas with a local dir",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "babel src -d dist && node dist/index.js"
+    "run": "babel src -d dist && node dist/index.js",
+    "watch": "babel -w src -d dist"
   },
   "author": "Michael Fine",
   "license": "ISC",
   "dependencies": {
     "expand-home-dir": "0.0.3",
-    "forever-monitor": "^1.7.1",
     "fs-extra": "^4.0.2",
-    "lodash": "^4.17.4",
-    "node-cron": "^1.2.1",
     "request-promise": "^4.2.1",
     "winston": "^2.3.1",
-    "yargs": "^9.0.1"
   },
   "devDependencies": {
     "babel-loader": "^7.1.2",
