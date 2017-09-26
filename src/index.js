@@ -1,69 +1,112 @@
 // import _ from 'lodash';
-// import Promise from 'bluebird';
-import {ensureDir, createWriteStream, pathExists, stat} from 'fs-extra';
+import Promise from 'bluebird';
+import {
+  ensureDir,
+  createWriteStream,
+  pathExists,
+  stat,
+  readFile
+} from 'fs-extra';
 import {join} from 'path';
 import request from 'request-promise';
 import winston from 'winston';
+import tilde from 'expand-home-dir';
 
 // import {baseUrl, token} from './config';
 
 // process.on('unhandledRejection', r => console.error(r, r.stack));
 
-const r = request.defaults({
-  baseUrl: 'https://canvas.harvard.edu/api/v1/',
-  headers: {
-    'Authorization': 'Bearer 1875~aUXKCzRHdK3vjlcm379H48QUB9WXznfekW70T8HhNpzN1elGYIvlZswloz5UcXIO'
-  },
-  json: true
-});
-
-// Create requestor for files, which have different url prefix
-const rFile = r.defaults({ baseUrl: null });
-
 // r('/courses/30230/folders').then(console.log)
 
-function downloadFile(file, path){
+function downloadFile(requester, file, path){
   winston.info('File %s out of date, updating', file.filename);
-  rFile(file.url).pipe(createWriteStream(path));
+  requester(file.url)
+    .pipe(createWriteStream(path))
+    .on('error', e => {
+      winston.error('Error downloading file %s into %s', file, path, e);
+    });
 }
 
-async function update(courseId, dest){
+async function updateCourse(dest, r, courseId){
+  winston.info('Updating course %d into %s', courseId, dest);
+  // Create requestor for files, which have different url prefix
+  const rFile = r.defaults({ baseUrl: null });
+
+  let filesModified = 0;
+  let filesCreated = 0;
+
   let folderPaths = {};
-  winston.info('Updating course %d into path %d', courseId, dest);
+
   const folders = await r(`courses/${courseId}/folders`);
   for (let folder of folders){
-    winston.info('(Potentially) creating folder: %s', folder.full_name);
     const path = join(dest, folder.full_name);
     folderPaths[folder.id] = folder.full_name;
-    await ensureDir(path.toString());
+    try{
+      await ensureDir(path.toString());
+    }
+    catch (e){
+      winston.error('Error creating folder %s', path.toString(), e);
+      throw(e);
+    }
   }
+
   const files = await r(`courses/${courseId}/files`);
   for (let file of files){
     const path = join(dest, folderPaths[file.folder_id], file.filename);
     const exists = await pathExists(path.toString());
     const remoteModified = Date.parse(file.updated_at);
+
     if (!exists){
       winston.info("File %s DNE, creating", file.filenmae);
-      downloadFile(file,path);
+      downloadFile(rFile, file,path);
+      filesCreated+=1;
     }
     else {
       const stats = await stat(path);
       if(remoteModified > stats.mtime.getTime()){
-        winston.info("File %s out of date, updating", file.filename, {
-          remoteModified,
-          localModified: stats.mtime.getTime()
-        });
-        downloadFile(file,path);
+        winston.info("File %s out of date, updating", file.filename);
+        downloadFile(rFile, file,path);
       }
-      else{
-        winston.info("File %s up to date, ignoring", file.filename, {
-          exists,
-          remoteModified,
-          localModified: stats.mtime.getTime()
-        })
-      }
+      filesModified+=1;
     }
   }
-  winston.info('Course %d sync complete', courseId);
+
+  winston.info(
+    'Course %d sync complete, %d updated, %d created',
+    courseId, filesModified, filesCreated
+  );
+  return {filesCreated, filesModified};
 }
-update(30230, './data/cs121').then();
+
+async function run(){
+  winston.info('Launching canvas sync');
+  let config;
+  try{
+    config = JSON.parse(await readFile(tilde('~/.csyncrc')));
+  }
+  catch (e) {
+    winston.error('Error reading config file at %s', tilde('~/.csyncrc'), e);
+    throw(e);
+  }
+  const r = request.defaults({
+    baseUrl: config.canvasUrl,
+    headers: {
+      'Authorization': `Bearer ${config.authToken}`
+    },
+    json: true
+  });
+
+  let modified = 0;
+  let created = 0;
+
+  for (let courseId of Object.keys(config.courses)){
+    const path = tilde(config.courses[courseId]);
+    let {filesCreated, filesModified} = await updateCourse(path, r, courseId);
+    modified += filesModified;
+    created += filesCreated;
+  }
+  winston.info('Canvas sync complete', {created, modified});
+  return {created, modified};
+}
+run().then();
+// update(30230, './data/cs121').then();
