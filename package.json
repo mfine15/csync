@@ -1,6 +1,6 @@
 {
   "name": "csync-canvas",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Command line utility to sync files from canvas with a local dir",
   "bin": {
     "csync-canvas": "dist/index.js"
