@@ -4,7 +4,7 @@
 
 csync-canvas (or csync for short) is a node package to reguarly download and sync files uploaded through [Canvas LMS](https://www.canvaslms.com/) by Instructure with your local filesystem. I got tired of manually downloading and updating the litany of files my classes hosted in canvas, so I wrote this instead.
 
-After installing and configuring csync, simply by running `node csync-canvas` (or by having cron regularly do so), you'll be able to place every course file for each course in a directory, gracefully handling modifications, conflicts, and deletion.
+After installing and configuring csync, simply by running `csync-canvas` (or by having cron regularly do so), you'll be able to place every course file for each course in a directory, gracefully handling modifications, conflicts, and deletion.
 
 ## Getting Started
 
@@ -54,7 +54,7 @@ To obtain the courseId for a course, go to the canvas page for said course, and 
 
 ## Running csync on schedule
 
-After following these instructions, csync should be configured and ready to go. But if you don't want to have to manually type `node csync-canvas` to keep your local course files in sync, you might want to configure csync to run on a schedule. This can be done with a number of utilities depending on platform, from `cron` to Mac's `launchcd`. 
+After following these instructions, csync should be configured and ready to go. But if you don't want to have to manually type `csync-canvas` to keep your local course files in sync, you might want to configure csync to run on a schedule. This can be done with a number of utilities depending on platform, from `cron` to Mac's `launchcd`. 
 
 Csync is agnostic to such schedulers, but will happily work through one. Docs for launchcd can be found [here](http://www.launchd.info/), and a cron intro [here](http://www.unixgeeks.org/security/newbie/unix/cron-1.html).
 
@@ -98,6 +98,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
+* Hat tip to anyone whose code was used
 * rsync, for enabling such derivative naming patterns
 * Instructure, for creating an open and well documented API for their platform

@@ -1,8 +1,11 @@
 {
   "name": "csync-canvas",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Command line utility to sync files from canvas with a local dir",
   "main": "src/index.js",
+  "bin": {
+    "csync-canvas": "dist/index.js"
+  },
   "scripts": {
     "run": "babel src -d dist && node dist/index.js",
     "watch": "babel -w src -d dist"
@@ -24,8 +27,8 @@
     "eslint-config-airbnb-base": "^12.0.0",
     "eslint-plugin-import": "^2.7.0"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/mfine15/csync"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mfine15/csync"
   }
 }

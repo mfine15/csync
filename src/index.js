@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import Promise from 'bluebird';
 import {
   ensureDir,
@@ -51,6 +53,7 @@ async function updateCourse(dest, r, courseId){
 
   const files = await r(`courses/${courseId}/files`);
   for (let file of files){
+    console.log(file);
     const path = join(dest, folderPaths[file.folder_id], file.filename);
     const exists = await pathExists(path.toString());
     const remoteModified = Date.parse(file.updated_at);
