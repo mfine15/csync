@@ -11,6 +11,7 @@
   },
   "author": "Michael Fine",
   "license": "ISC",
+  "preinstall": "npm install .",
   "dependencies": {
     "expand-home-dir": "0.0.3",
     "fs-extra": "^4.0.2",
