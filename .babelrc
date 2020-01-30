@@ -1,16 +1,27 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "node": "8.14"
+    [
+      "env",
+      {
+        "targets": {
+          "node": "8.14"
+        }
       }
-    }]
+    ]
   ],
   "plugins": [
-    ["babel-plugin-stack-trace-sourcemap", {
-        "importOverride": ["source-map-support", "install", "_sourceMapSupport"],
+    [
+      "babel-plugin-stack-trace-sourcemap",
+      {
+        "importOverride": [
+          "source-map-support",
+          "install",
+          "_sourceMapSupport"
+        ],
         "execute": true
-    }]
+      }
+    ]
   ],
-  "sourceMaps": "inline"
+  "sourceMaps": "inline",
+  "retainLines": true
 }

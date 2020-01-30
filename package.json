@@ -1,6 +1,6 @@
 {
   "name": "csync-canvas",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Command line utility to sync files from canvas with a local dir",
   "bin": {
     "csync-canvas": "dist/index.js"
@@ -21,6 +21,7 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-stack-trace-sourcemap": "^1.0.2",
     "babel-preset-env": "^1.6.0",
